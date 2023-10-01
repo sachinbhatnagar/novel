@@ -1,16 +1,9 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  ReactNode,
-  useRef,
-  useLayoutEffect,
-} from "react";
-import { Editor, Range, Extension } from "@tiptap/core";
-import Suggestion from "@tiptap/suggestion";
-import { ReactRenderer } from "@tiptap/react";
-import { useCompletion } from "ai/react";
-import tippy from "tippy.js";
+import React, { useState, useEffect, useCallback, ReactNode, useRef, useLayoutEffect } from 'react';
+import { Editor, Range, Extension } from '@tiptap/core';
+import Suggestion from '@tiptap/suggestion';
+import { ReactRenderer } from '@tiptap/react';
+import { useCompletion } from 'ai/react';
+import tippy from 'tippy.js';
 import {
   Heading1,
   Heading2,
@@ -23,13 +16,13 @@ import {
   Image as ImageIcon,
   Code,
   CheckSquare,
-} from "lucide-react";
-import { LoadingCircle } from "@/ui/icons";
-import { toast } from "sonner";
-import va from "@vercel/analytics";
-import { Magic } from "@/ui/icons";
-import { getPrevText } from "@/lib/editor";
-import { startImageUpload } from "@/ui/editor/plugins/upload-images";
+} from 'lucide-react';
+import { LoadingCircle } from '@/ui/icons';
+import { toast } from 'sonner';
+import va from '@vercel/analytics';
+import { Magic } from '@/ui/icons';
+import { getPrevText } from '@/lib/editor';
+import { startImageUpload } from '@/ui/editor/plugins/upload-images';
 
 interface CommandItemProps {
   title: string;
@@ -43,20 +36,12 @@ interface CommandProps {
 }
 
 const Command = Extension.create({
-  name: "slash-command",
+  name: 'slash-command',
   addOptions() {
     return {
       suggestion: {
-        char: "/",
-        command: ({
-          editor,
-          range,
-          props,
-        }: {
-          editor: Editor;
-          range: Range;
-          props: any;
-        }) => {
+        char: '/',
+        command: ({ editor, range, props }: { editor: Editor; range: Range; props: any }) => {
           props.command({ editor, range });
         },
       },
@@ -75,136 +60,127 @@ const Command = Extension.create({
 const getSuggestionItems = ({ query }: { query: string }) => {
   return [
     {
-      title: "Continue writing",
-      description: "Use AI to expand your thoughts.",
-      searchTerms: ["gpt"],
+      title: 'Continue writing',
+      description: 'Use AI to expand your thoughts.',
+      searchTerms: ['gpt'],
       icon: <Magic className="w-7" />,
     },
     {
-      title: "Send Feedback",
-      description: "Let us know how we can improve.",
+      title: 'Send Feedback',
+      description: 'Let us know how we can improve.',
       icon: <MessageSquarePlus size={18} />,
       command: ({ editor, range }: CommandProps) => {
         editor.chain().focus().deleteRange(range).run();
-        window.open("/feedback", "_blank");
+        window.open('/feedback', '_blank');
       },
     },
     {
-      title: "Text",
-      description: "Just start typing with plain text.",
-      searchTerms: ["p", "paragraph"],
+      title: 'Text',
+      description: 'Just start typing with plain text.',
+      searchTerms: ['p', 'paragraph'],
       icon: <Text size={18} />,
       command: ({ editor, range }: CommandProps) => {
-        editor
-          .chain()
-          .focus()
-          .deleteRange(range)
-          .toggleNode("paragraph", "paragraph")
-          .run();
+        editor.chain().focus().deleteRange(range).toggleNode('paragraph', 'paragraph').run();
       },
     },
     {
-      title: "To-do List",
-      description: "Track tasks with a to-do list.",
-      searchTerms: ["todo", "task", "list", "check", "checkbox"],
+      title: 'To-do List',
+      description: 'Track tasks with a to-do list.',
+      searchTerms: ['todo', 'task', 'list', 'check', 'checkbox'],
       icon: <CheckSquare size={18} />,
       command: ({ editor, range }: CommandProps) => {
         editor.chain().focus().deleteRange(range).toggleTaskList().run();
       },
     },
     {
-      title: "Heading 1",
-      description: "Big section heading.",
-      searchTerms: ["title", "big", "large"],
+      title: 'Heading 1',
+      description: 'Big section heading.',
+      searchTerms: ['title', 'big', 'large'],
       icon: <Heading1 size={18} />,
       command: ({ editor, range }: CommandProps) => {
-        editor
-          .chain()
-          .focus()
-          .deleteRange(range)
-          .setNode("heading", { level: 1 })
-          .run();
+        editor.chain().focus().deleteRange(range).setNode('heading', { level: 1 }).run();
       },
     },
     {
-      title: "Heading 2",
-      description: "Medium section heading.",
-      searchTerms: ["subtitle", "medium"],
+      title: 'Heading 2',
+      description: 'Medium section heading.',
+      searchTerms: ['subtitle', 'medium'],
       icon: <Heading2 size={18} />,
       command: ({ editor, range }: CommandProps) => {
-        editor
-          .chain()
-          .focus()
-          .deleteRange(range)
-          .setNode("heading", { level: 2 })
-          .run();
+        editor.chain().focus().deleteRange(range).setNode('heading', { level: 2 }).run();
       },
     },
     {
-      title: "Heading 3",
-      description: "Small section heading.",
-      searchTerms: ["subtitle", "small"],
+      title: 'Heading 3',
+      description: 'Small section heading.',
+      searchTerms: ['subtitle', 'small'],
       icon: <Heading3 size={18} />,
       command: ({ editor, range }: CommandProps) => {
-        editor
-          .chain()
-          .focus()
-          .deleteRange(range)
-          .setNode("heading", { level: 3 })
-          .run();
+        editor.chain().focus().deleteRange(range).setNode('heading', { level: 3 }).run();
       },
     },
     {
-      title: "Bullet List",
-      description: "Create a simple bullet list.",
-      searchTerms: ["unordered", "point"],
+      title: 'Bullet List',
+      description: 'Create a simple bullet list.',
+      searchTerms: ['unordered', 'point'],
       icon: <List size={18} />,
       command: ({ editor, range }: CommandProps) => {
         editor.chain().focus().deleteRange(range).toggleBulletList().run();
       },
     },
     {
-      title: "Numbered List",
-      description: "Create a list with numbering.",
-      searchTerms: ["ordered"],
+      title: 'Numbered List',
+      description: 'Create a list with numbering.',
+      searchTerms: ['ordered'],
       icon: <ListOrdered size={18} />,
       command: ({ editor, range }: CommandProps) => {
         editor.chain().focus().deleteRange(range).toggleOrderedList().run();
       },
     },
     {
-      title: "Quote",
-      description: "Capture a quote.",
-      searchTerms: ["blockquote"],
+      title: 'Quote',
+      description: 'Capture a quote.',
+      searchTerms: ['blockquote'],
       icon: <TextQuote size={18} />,
       command: ({ editor, range }: CommandProps) =>
-        editor
-          .chain()
-          .focus()
-          .deleteRange(range)
-          .toggleNode("paragraph", "paragraph")
-          .toggleBlockquote()
-          .run(),
+        editor.chain().focus().deleteRange(range).toggleNode('paragraph', 'paragraph').toggleBlockquote().run(),
     },
     {
-      title: "Code",
-      description: "Capture a code snippet.",
-      searchTerms: ["codeblock"],
+      title: 'Code',
+      description: 'Capture a code snippet.',
+      searchTerms: ['codeblock'],
       icon: <Code size={18} />,
-      command: ({ editor, range }: CommandProps) =>
-        editor.chain().focus().deleteRange(range).toggleCodeBlock().run(),
+      command: ({ editor, range }: CommandProps) => editor.chain().focus().deleteRange(range).toggleCodeBlock().run(),
     },
     {
-      title: "Image",
-      description: "Upload an image from your computer.",
-      searchTerms: ["photo", "picture", "media"],
+      title: 'Youtube',
+      description: 'Insert a Video',
+      searchTerms: ['video', 'vieo thing'],
+      icon: <Code size={18} />,
+      command: ({ editor, range }: CommandProps) => {
+        editor.chain().focus().deleteRange(range).run();
+        const url = prompt('Enter YouTube URL');
+
+        if (url) {
+          editor.commands.setYoutubeVideo({
+            src: url,
+            width: 640,
+            height: 480,
+          });
+        }
+      },
+    },
+    {
+      title: 'Image',
+      description: 'Upload an image from your computer.',
+      searchTerms: ['photo', 'picture', 'media'],
       icon: <ImageIcon size={18} />,
       command: ({ editor, range }: CommandProps) => {
         editor.chain().focus().deleteRange(range).run();
         // upload image
-        const input = document.createElement("input");
-        input.type = "file";
-        input.accept = "image/*";
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
         input.onchange = async () => {
           if (input.files?.length) {
             const file = input.files[0];
@@ -216,13 +192,12 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       },
     },
   ].filter((item) => {
-    if (typeof query === "string" && query.length > 0) {
+    if (typeof query === 'string' && query.length > 0) {
       const search = query.toLowerCase();
       return (
         item.title.toLowerCase().includes(search) ||
         item.description.toLowerCase().includes(search) ||
-        (item.searchTerms &&
-          item.searchTerms.some((term: string) => term.includes(search)))
+        (item.searchTerms && item.searchTerms.some((term: string) => term.includes(search)))
       );
     }
     return true;
@@ -243,26 +218,16 @@ export const updateScrollView = (container: HTMLElement, item: HTMLElement) => {
   }
 };
 
-const CommandList = ({
-  items,
-  command,
-  editor,
-  range,
-}: {
-  items: CommandItemProps[];
-  command: any;
-  editor: any;
-  range: any;
-}) => {
+const CommandList = ({ items, command, editor, range }: { items: CommandItemProps[]; command: any; editor: any; range: any }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const { complete, isLoading } = useCompletion({
-    id: "novel",
-    api: "/api/generate",
+    id: 'novel',
+    api: '/api/generate',
     onResponse: (response) => {
       if (response.status === 429) {
-        toast.error("You have reached your request limit for the day.");
-        va.track("Rate Limit Reached");
+        toast.error('You have reached your request limit for the day.');
+        va.track('Rate Limit Reached');
         return;
       }
       editor.chain().focus().deleteRange(range).run();
@@ -282,11 +247,11 @@ const CommandList = ({
   const selectItem = useCallback(
     (index: number) => {
       const item = items[index];
-      va.track("Slash Command Used", {
+      va.track('Slash Command Used', {
         command: item.title,
       });
       if (item) {
-        if (item.title === "Continue writing") {
+        if (item.title === 'Continue writing') {
           if (isLoading) return;
           complete(
             getPrevText(editor, {
@@ -303,28 +268,28 @@ const CommandList = ({
   );
 
   useEffect(() => {
-    const navigationKeys = ["ArrowUp", "ArrowDown", "Enter"];
+    const navigationKeys = ['ArrowUp', 'ArrowDown', 'Enter'];
     const onKeyDown = (e: KeyboardEvent) => {
       if (navigationKeys.includes(e.key)) {
         e.preventDefault();
-        if (e.key === "ArrowUp") {
+        if (e.key === 'ArrowUp') {
           setSelectedIndex((selectedIndex + items.length - 1) % items.length);
           return true;
         }
-        if (e.key === "ArrowDown") {
+        if (e.key === 'ArrowDown') {
           setSelectedIndex((selectedIndex + 1) % items.length);
           return true;
         }
-        if (e.key === "Enter") {
+        if (e.key === 'Enter') {
           selectItem(selectedIndex);
           return true;
         }
         return false;
       }
     };
-    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener('keydown', onKeyDown);
     return () => {
-      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener('keydown', onKeyDown);
     };
   }, [items, selectedIndex, setSelectedIndex, selectItem]);
 
@@ -352,17 +317,13 @@ const CommandList = ({
         return (
           <button
             className={`flex w-full items-center space-x-2 rounded-md px-2 py-1 text-left text-sm text-stone-900 hover:bg-stone-100 ${
-              index === selectedIndex ? "bg-stone-100 text-stone-900" : ""
+              index === selectedIndex ? 'bg-stone-100 text-stone-900' : ''
             }`}
             key={index}
             onClick={() => selectItem(index)}
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-md border border-stone-200 bg-white">
-              {item.title === "Continue writing" && isLoading ? (
-                <LoadingCircle />
-              ) : (
-                item.icon
-              )}
+              {item.title === 'Continue writing' && isLoading ? <LoadingCircle /> : item.icon}
             </div>
             <div>
               <p className="font-medium">{item.title}</p>
@@ -387,14 +348,14 @@ const renderItems = () => {
       });
 
       // @ts-ignore
-      popup = tippy("body", {
+      popup = tippy('body', {
         getReferenceClientRect: props.clientRect,
         appendTo: () => document.body,
         content: component.element,
         showOnCreate: true,
         interactive: true,
-        trigger: "manual",
-        placement: "bottom-start",
+        trigger: 'manual',
+        placement: 'bottom-start',
       });
     },
     onUpdate: (props: { editor: Editor; clientRect: DOMRect }) => {
@@ -406,7 +367,7 @@ const renderItems = () => {
         });
     },
     onKeyDown: (props: { event: KeyboardEvent }) => {
-      if (props.event.key === "Escape") {
+      if (props.event.key === 'Escape') {
         popup?.[0].hide();
 
         return true;
